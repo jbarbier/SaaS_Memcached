@@ -3,4 +3,114 @@
   <%= gravatar_for @user %>
   <%= @user.email %>
 </h1>
+<div class="alert alert-info">
+  Congratulations <%= @user.email %>. Your Memcached server is ready to use.
+</div>
+<h1>IP: <%= my_public_ip %></h1>
+<h1>PORT: <%= @user.memcached %></h1>
+<div class="alert alert-info">
+  Use it with your favorite language.
+</div>
+<div class="code">
+  <ul class="row">
+    <li class="span6">
+      <h2>
+	RUBY
+      </h2>
+      <pre>
+# run gem install dalli first
 
+require 'dalli'
+
+ip = '<%= my_public_ip %>'
+port = <%= @user.memcached %>
+
+dc = Dalli::Client.new("#{ip}:#{port}")
+dc.set('abc', "Always Be Closing")
+value = dc.get('abc')
+
+puts value</pre>
+    </li>
+    <li class="span6 float-up">
+      <h2>
+	PHP
+      </h2>
+      <pre>
+$ip = '<%= my_public_ip %>';
+$port = <%= @user.memcached %>;
+
+$memcache_obj = new Memcache;
+$memcache_obj->connect($ip, $port);
+
+$memcache_obj->set('rule_1', 'You DO NOT talk about FIGHT CLUB');
+$v = $memcache_obj->get('rule_1');
+
+echo "$v\n";
+      </pre>
+    </li>
+  </ul>
+</div>
+
+<div class="code">
+  <ul class="row">
+    <li class="span6">
+      <h2>
+	PYTHON
+      </h2>
+      <pre>
+# pip install python-memcached if import fails
+
+import memcache
+
+ip = '<%= my_public_ip %>'
+port = <%= @user.memcached %>
+
+mc = memcache.Client(["{0}:{1}".format(ip, port)],
+                     debug=0)
+
+mc.set("best_dev", "Guillaume C.")
+value = mc.get("best_dev")
+
+print value
+
+
+
+
+
+
+
+
+
+</pre>
+    </li>
+    <li class="span6 float-up">
+      <h2>
+	GO
+      </h2>
+      <pre>
+package main
+
+import (
+        "fmt"
+        "github.com/kklis/gomemcache"
+)
+
+func main() {
+
+        ip := "<%= my_public_ip %>"
+        port := <%= @user.memcached %>
+
+        memc, err := gomemcache.Connect(ip, port)
+        if err != nil {
+                panic(err)
+        }
+        err = memc.Set("foo", []byte("bar"), 0, 0)
+        if err != nil {
+                panic(err)
+        }
+        val, _, _ := memc.Get("foo")
+        fmt.Printf("%s\n", val)
+}</pre>
+    </li>
+  </ul>
+</div>

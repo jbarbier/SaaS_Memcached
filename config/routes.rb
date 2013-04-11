@@ -4,6 +4,7 @@ SaaSMemcached::Application.routes.draw do
 
   root to: 'static_pages#home'
 
+  match '/me', to: 'users#show'
   match '/about', to: 'static_pages#about'
   match '/signup', to: 'users#new'
   match '/signin',  to: 'sessions#new'
