@@ -6,8 +6,11 @@
 <div class="alert alert-info">
   Congratulations <%= @user.email %>. Your Memcached server is ready to use.
 </div>
-<h1>IP: <%= my_public_ip %></h1>
-<h1>PORT: <%= @user.memcached %></h1>
+<h1>Your Memcached Server is ready!</h1>
+<div class="block-info">
+  <h3>IP: <%= my_public_ip %></h3>
+  <h3>PORT: <%= @user.memcached %></h3>
+</div>
 <div class="alert alert-info">
   Use it with your favorite language.
 </div>
@@ -18,7 +21,7 @@
 	RUBY
       </h2>
       <pre>
-# run gem install dalli first
+# gem install dalli
 
 require 'dalli'
 
@@ -26,10 +29,10 @@ ip = '<%= my_public_ip %>'
 port = <%= @user.memcached %>
 
 dc = Dalli::Client.new("#{ip}:#{port}")
-dc.set('abc', "Always Be Closing")
-value = dc.get('abc')
+dc.set('<%= @md5 %>','<%= @user.email %>')
+value = dc.get('<%= @md5 %>')
 
-puts value</pre>
+puts "Welcome #{value}! Your Memcached server is ready to use :)"</pre>
     </li>
     <li class="span6 float-up">
       <h2>
@@ -42,10 +45,11 @@ $port = <%= @user.memcached %>;
 $memcache_obj = new Memcache;
 $memcache_obj->connect($ip, $port);
 
-$memcache_obj->set('rule_1', 'You DO NOT talk about FIGHT CLUB');
-$v = $memcache_obj->get('rule_1');
+$memcache_obj->set('<%= @md5 %>', '<%= @user.email %>');
+$v = $memcache_obj->get("<%= @md5 %>");
 
-echo "$v\n";
+echo "Welcome $v! Your Memcached server is ready to use :)\n";
+
       </pre>
     </li>
   </ul>
@@ -58,7 +62,7 @@ echo "$v\n";
 	PYTHON
       </h2>
       <pre>
-# pip install python-memcached if import fails
+# pip install python-memcached
 
 import memcache
 
@@ -68,10 +72,11 @@ port = <%= @user.memcached %>
 mc = memcache.Client(["{0}:{1}".format(ip, port)],
                      debug=0)
 
-mc.set("best_dev", "Guillaume C.")
-value = mc.get("best_dev")
+mc.set("<%= @md5 %>", "<%= @user.email %>")
+value = mc.get("<%= @md5 %>")
 
-print value
+print "Welcome {0}! Your Memcached server is ready to use :)".format(value)
+
 
 
 
@@ -104,12 +109,12 @@ func main() {
         if err != nil {
                 panic(err)
         }
-        err = memc.Set("foo", []byte("bar"), 0, 0)
+        err = memc.Set("<%= @md5 %>", []byte("<%= @user.email %>"), 0, 0)
         if err != nil {
                 panic(err)
         }
-        val, _, _ := memc.Get("foo")
-        fmt.Printf("%s\n", val)
+        val, _, _ := memc.Get("<%= @md5 %>")
+        fmt.Printf("Welcome %s! Your Memcached server is ready to use :)\n", val)
 }</pre>
     </li>
   </ul>
