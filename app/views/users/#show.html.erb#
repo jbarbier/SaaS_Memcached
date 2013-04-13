@@ -10,6 +10,7 @@
 <div class="block-info">
   <h3>IP: <%= my_public_ip %></h3>
   <h3>PORT: <%= @user.memcached %></h3>
+  <div>container ip = <%= @user.docker_ip %> | container id = <%= @user.container_id %></div>
 </div>
 <div class="alert alert-info">
   Use it with your favorite language.

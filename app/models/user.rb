@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  attr_accessible :email, :password, :password_confirmation, :memcached
+  attr_accessible :email, :password, :password_confirmation, :secure_ip
   has_secure_password
 
   before_save { |user| user.email = email.downcase }

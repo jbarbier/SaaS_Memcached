@@ -1,0 +1,5 @@
+#!/bin/sh
+
+/sbin/iptables -I FORWARD -d $1 -s $2 -j ACCEPT
+/sbin/iptables -A FORWARD -d $1 -j DROP
+

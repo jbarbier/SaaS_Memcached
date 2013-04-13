@@ -1,0 +1,15 @@
+<div class="alert alert-info">
+  In order to secure your Memcached server you can restrict its access by IP. If you do so, only clients from this IP will be able to access it.
+</div>
+<h1>
+  Secure your Memcached server
+</h1>
+<div class="row">
+  <div class="span3 offset3">
+    <%= form_tag("/ip", :method => "get") do %>
+    <%= label_tag(:ip, "Enter your IP") %>
+    <%= text_field_tag(:ip, @user.secure_ip)  %>
+    <%= submit_tag("Save", class:"btn btn-large btn-primary") %>
+    <% end %>
+  </div>
+</div>

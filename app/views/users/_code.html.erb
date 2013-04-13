@@ -1,0 +1,105 @@
+<div class="code">
+  <ul class="row">
+    <li class="span6">
+      <h2>
+	RUBY
+      </h2>
+      <pre>
+# gem install dalli
+
+require 'dalli'
+
+ip = '<%= my_public_ip %>'
+port = <%= @user.memcached %>
+
+dc = Dalli::Client.new("#{ip}:#{port}")
+dc.set('<%= @md5 %>','<%= @user.email %>')
+value = dc.get('<%= @md5 %>')
+
+puts "Welcome #{value}! Your Memcached server is ready to use :)"</pre>
+    </li>
+    <li class="span6 float-up">
+      <h2>
+	PHP
+      </h2>
+      <pre>
+$ip = '<%= my_public_ip %>';
+$port = <%= @user.memcached %>;
+
+$memcache_obj = new Memcache;
+$memcache_obj->connect($ip, $port);
+
+$memcache_obj->set('<%= @md5 %>', '<%= @user.email %>');
+$v = $memcache_obj->get("<%= @md5 %>");
+
+echo "Welcome $v! Your Memcached server is ready to use :)\n";
+
+      </pre>
+    </li>
+  </ul>
+</div>
+
+<div class="code">
+  <ul class="row">
+    <li class="span6">
+      <h2>
+	PYTHON
+      </h2>
+      <pre>
+# pip install python-memcached
+
+import memcache
+
+ip = '<%= my_public_ip %>'
+port = <%= @user.memcached %>
+
+mc = memcache.Client(["{0}:{1}".format(ip, port)],
+                     debug=0)
+
+mc.set("<%= @md5 %>", "<%= @user.email %>")
+value = mc.get("<%= @md5 %>")
+
+print "Welcome {0}! Your Memcached server is ready to use :)".format(value)
+
+
+
+
+
+
+
+
+
+
+</pre>
+    </li>
+    <li class="span6 float-up">
+      <h2>
+	GO
+      </h2>
+      <pre>
+package main
+
+import (
+        "fmt"
+        "github.com/kklis/gomemcache"
+)
+
+func main() {
+
+        ip := "<%= my_public_ip %>"
+        port := <%= @user.memcached %>
+
+        memc, err := gomemcache.Connect(ip, port)
+        if err != nil {
+                panic(err)
+        }
+        err = memc.Set("<%= @md5 %>", []byte("<%= @user.email %>"), 0, 0)
+        if err != nil {
+                panic(err)
+        }
+        val, _, _ := memc.Get("<%= @md5 %>")
+        fmt.Printf("Welcome %s! Your Memcached server is ready to use :)\n", val)
+}</pre>
+    </li>
+  </ul>
+</div>
