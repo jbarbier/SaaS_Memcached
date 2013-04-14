@@ -223,35 +223,226 @@ docker_path should contain the path of your Docker’s executable
 
     container_id = `#{docker_path}docker run -d -p 11211 jbarbier/memcached memcached -u daemon`
 
-As discussed in the previous chapter, docker run -d runs a command in a new container. We pass the option -d so that it leaves the container run in the background.
+As discussed in the previous chapter, ``docker run -d`` runs a command in a new container. We pass the option -d so that it leaves the container run in the background.
 
 The option ``-p 11211`` maps the internal port of the container used by Memcached with a public port of our server.
 
-``jbarbier/memcached`` is the name of our image with Memcached installed (see previous chapter to see how we built this image). If you have created your own image, you should replace jbarbier/memcached by the name of your image.
+``jbarbier/memcached`` is the name of our image with Memcached installed (see previous chapter to see how we built this image). If you have created your own image, you should replace ``jbarbier/memcached`` by the name of your image.
 
 memcached -u daemon is the command we run inside the new container. We use the option -u daemon to run Memcached with user daemon. The command docker run  returns the id of the new container. We will need it so we save it to the variable container_id.
 
-3.	cmd = "#{docker_path}docker inspect #{container_id}"
+    cmd = "#{docker_path}docker inspect #{container_id}"
 
-As discussed earlier, we need to get the public port to give it to the user. So we inspect our newly created container with the docker inspect command. We pass it the container_id variable to tell Docker which container to inspect. This command returns us lots of information about the container formatted in JSON. We save it and 
+As discussed earlier, we need to get the public port to give it to the user. So we inspect our newly created container with the docker inspect command. We pass it the ``container_id`` variable to tell Docker which container to inspect. This command returns us lots of information about the container formatted in JSON. We save it and 
 
-4.	i = JSON.parse(json_infos)
+    i = JSON.parse(json_infos)
 
 we parse it to access the information. We then store all the required information into the user variable.
 
-5.	@user.memcached = i["NetworkSettings"]["PortMapping"]["11211"]
+    @user.memcached = i["NetworkSettings"]["PortMapping"]["11211"]
 
-i["NetworkSettings"]["PortMapping"]["11211"] contains the public port mapped with the port 11211, used by Memcached.
+``i["NetworkSettings"]["PortMapping"]["11211"]`` contains the public port mapped with the port 11211, used by Memcached.
 
-6.	@user.container_id = container_id
+    @user.container_id = container_id
 
 saves the container id and
 
-7.	@user.docker_ip = i["NetworkSettings"]["IpAddress"]
+    @user.docker_ip = i["NetworkSettings"]["IpAddress"]
 
 saves the internal IP address of our container. We will need this IP when we will be adding a basic layer of security on top of the user’s Memcached service.
 
+## Displaying the public Memcached IP and port to the user
 
+We now have to give the user the IP and port with which he can access his Memcached. The code to show these information is in the file show.html.erb.
+
+    <% provide(:title, @user.email) %>
+    <h1>
+      <%= gravatar_for @user %>
+      <%= @user.email %>
+    </h1>
+    <div class="alert alert-info">
+      Congratulations <%= @user.email %>. Your Memcached server is ready to use.
+    </div>
+    <h1>Your Memcached Server is ready!</h1>
+    <div class="block-info">
+      <h3>IP: <%= my_public_ip %></h3>
+      <h3>PORT: <%= @user.memcached %></h3>
+    </div>
+    <div class="alert alert-info">
+      Use it with your favorite language.
+    </div>
+    <%= render 'code' %>
+    <%= render 'ip' %>
+
+### Port
+
+We already have the port saved. We just need to display it
+
+    PORT: <%= @user.memcached %>
+
+### IP address    
+
+We just need to know our public IP address (the IP of our server). There are plenty of ways to know it. One of which is to ask an online service. I chose to use ``ifconfig.me`` but you could use any service of this type. The code to discover its own public IP address is in the file users_helper.rb.
+
+    def my_public_ip
+        @@ip ||= Net::HTTP.get_response(URI.parse("http://ifconfig.me/ip")).body.chomp
+    end
+
+``http://ifconfig.me/ip`` simply returns the IP. So we just have to store it and then show it to the user.
+
+    IP: <%= my_public_ip %>
+
+Alternatively, if you just want to test, you can hard code your IP address in ``my_public_ip`` or even in show.html.erb.
+
+At this point you should have all you need to build your own Memcached SaaS.
+
+If you cloned my this repository, after the registration you should see the Profile’s page showing the IP and port whith which you can access your Memcached.
+
+You can also check that a new container is running every time a new user registers.
+
+    julien@cs50:~$ ps aux | grep docker
+    root     23863  0.0  0.0  27540  1220 ?        S    Apr11   0:00 lxc-start -n 48610f83f354bd5a7675bf41daedbb87958e6acf618f8c24487526373ddde8b8 -f /var/lib/docker/containers/48610f83f354bd5a7675bf41daedbb87958e6acf618f8c24487526373ddde8b8/config.lxc -- /sbin/init -g 172.16.42.1 -- memcached -u daemon
+    […]
+
+## Adding security
+
+We have now a minimalist Memcached SaaS. But our users are not happy because anybody can access their Memcached server. So we need to give the option to our users to restrict somehow the access to their Memcached. There are plenty of ways to do so. In this tutorial we will give the user the option to restrict the access to the Memcached to one IP. And to do so we will use iptables.
+
+### Using iptables to filter by IP
+
+Iptables is used to set up, maintain, and inspect the tables of IPv4 packet filter rules in the Linux kernel. The command lines to restrict the access to the service to one IP address is in the file add_ip 
+
+    #!/bin/sh
+    
+    /sbin/iptables -I FORWARD -d $1 -s $2 -j ACCEPT
+    /sbin/iptables -A FORWARD -d $1 -j DROP
+
+``add_ip`` is an executable shell script. That is why we have 
+
+    #!/bin/sh
+
+at the beginning of the file. The script will take two arguments in parameters.
+``$1`` is the internal IP of the container that we previously stored in ``@user.docker_ip`` upon user account creation.
+``$2`` is the IP provided by the user which will become the only authorized IP to access the user’s container, and the user’s Memcached server.
+
+    /sbin/iptables -I FORWARD -d $1 -s $2 -j ACCEPT
+
+Tells iptables to add a rule to accept IP ``$2`` to access internal IP ``$1``.
+
+    /sbin/iptables -A FORWARD -d $1 -j DROP
+
+Tells iptables to add a rule to deny all access to IP ``$1`` from any IP.
+Since the first rule is “checked” first, only IP ``$2`` will be able to access IP ``$1``.
+
+The file ``remove_ip`` does exactly the opposite using the –D option to delete the previous rules.
+
+    #!/bin/sh
+    /sbin/iptables -D FORWARD -d $1 -s $2 -j ACCEPT
+    /sbin/iptables -D FORWARD -d $1 -j DROP
+
+### Calling iptables from a web server
+
+We call the previous scripts from the two following functions in users_controller.rb
+
+      def iptables_add_ip(i)
+        cwd = Dir.pwd
+        `sudo #{cwd}/iptables/add_ip #{@user.docker_ip} #{i}`
+      end
+
+      def iptables_remove_ip(i)
+        cwd = Dir.pwd
+        `sudo #{cwd}/iptables/remove_ip #{@user.docker_ip} #{i}`
+      end
+
+But in order to use iptables we need to have root privileges. And our web server is probably not running as root (and it should not). So we will need to use the sudo command and allow our webserver to run the two scripts.
+
+To do so we will use /etc/sudoers. The /etc/sudoers file controls who can run what commands as what users on what machines and can also control special things such as whether you need a password for particular commands.
+
+A simple way to tackle our problem is to create a new file in /etc/sudoers.d. We can call it saas_memcached for instance. 
+
+    julien@cs50:~$ cat /etc/sudoers.d/saas_memcached
+    Cmnd_Alias ADD_REM_IPS_CMDS = /home/julien/final_proj/SaaS_Memcached/iptables/add_ip, /home/julien/final_proj/SaaS_Memcached/iptables/remove_ip
+
+    www-data ALL=(ALL) NOPASSWD: ADD_REM_IPS_CMDS
+
+There are two lines in the file. The first line creates an alias of all the executable files and the second allow the user ``www-data`` to run these executable files with root privilege without requiring typing any password. 
+
+You should replace ``/home/julien/final_proj/SaaS_Memcached`` by the root of your website. If your server does not run as ``www-data``, simply replace ``www-data`` by the right user in the file.
+
+Now the user should be able to specify the allowed IP from which he can access Memcached. Every other IP address will be blocked.
+
+### Testing the security filter
+
+In order to test our security filter, let’s create an account with the email ``thisis@cs50.com`` to launch a new Memcached server. Copy the example PHP code to one computer, and the Ruby code to antoher computer on another network.
+In the following examples we will run the ruby script from IP ``69.42.42.42`` and the PHP script from IP ``69.33.33.33``.
+
+If we run we run these scripts from our two IPs it will work.
+
+With the first computer:
+
+    Guillotine:test_memcached jbarbier$ ruby ip_ok.rb
+    Welcome thisis@cs50.com! Your Memcached server is ready to use :)
+
+With the second computer
+
+    julien@revolution:/tmp$ php ip_nok.php 
+    Welcome thisis@cs50.com! Your Memcached server is ready to use :)
+
+
+Let’s scroll to the bottom of the profile page and add the IP ``69.42.42.42`` so our Memcached access can be restricted to this IP.
+
+After saving the IP, we should check that the access is really restricted to the IP ``69.42.42.42``.
+
+Running the Ruby script from ``69.42.42.42``
+
+    Guillotine:test_memcached jbarbier$ ruby ip_ok.rb
+    Welcome thisis@cs50.com! Your Memcached server is ready to use :)
+
+Running the PHP script from ``69.33.33.33``
+
+    julien@revolution:/tmp$ php ip_nok.php 
+    PHP Notice:  Memcache::connect(): Server 137.116.225.4 (tcp 49164, udp 0) failed with: Connection timed out (110) in /tmp/ip_nok.php on line 6
+    PHP Warning:  Memcache::connect(): Can't connect to 137.116.225.4:49164, Connection timed out (110) in /tmp/ip_nok.php on line 6
+    […]
+
+As we can see only the script ran from IP ``69.42.42.42`` is able to connect to Memcached.
+
+Let’s check the iptables by running ``iptables –L``
+
+    julien@cs50:~$ sudo iptables -L
+    [sudo] password for julien:
+    Chain INPUT (policy ACCEPT)
+    target     prot opt source               destination
+    
+    Chain FORWARD (policy ACCEPT)
+    target     prot opt source               destination
+    ACCEPT     all  --  c-69-42-42-42.hsd1.ca.comcast.net  172.16.42.14
+    DROP       all  --  anywhere             172.16.42.14
+    
+    Chain OUTPUT (policy ACCEPT)
+    target     prot opt source               destination
+
+The two lines
+
+    ACCEPT     all  --  c-69-42-42-42.hsd1.ca.comcast.net  172.16.42.14
+    DROP       all  --  anywhere             172.16.42.14
+
+Have been added by our add_ip script to restrict the access of ``thisis@50.com``’s container running Memcached.
+
+We can verify that the the IP ``172.16.42.14`` is the right internal IP of the container by using the ``docker inspect`` command on the container id. We saved this id into ``@user.container_id`` during registration (see users_controller.rb). Let’s retrieve this id from the database.
+
+    julien@cs50:~/final_proj/SaaS_Memcached$ sqlite3 db/www.sqlite3
+    SQLite version 3.7.13 2012-06-11 02:05:22
+    Enter ".help" for instructions
+    Enter SQL statements terminated with a ";"
+    sqlite> select container_id from users where email = 'thisis@cs50.com';
+    190c7d70fbc1
+
+*Be sure to replace ``www.sqlite3`` by your database.*
+
+On our server, the id of ``thisis@50.com``’s container is ``190c7d70fbc1``. To check the IP of the container we can use the ``docker inspect`` command.
+
+Be sure to replace 190c7d70fbc1 by the right container id that the SQL request gave you during the last step.
 
 # Build your own Memcached SaaS with Docker
 
