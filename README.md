@@ -14,11 +14,6 @@ This document and source code are part of my final project for cs50x that I star
 
 Along the way I wrote several documents that are available on SlideShare. Some of them have been used by Docker in their documentation.
 
-### Sources
-
-You can find, clone, fork, or download the source code of the project on GitHub:
-https://github.com/jbarbier/SaaS_Memcached
-
 ### Proof of concept
 
 By downloading the source code and reading this document you will be able to run a minimalist SaaS. Your users will be able to get their own Memcached server. Of course this is only a proof of concept, but it runs quite well.
@@ -442,15 +437,33 @@ We can verify that the the IP ``172.16.42.14`` is the right internal IP of the c
 
 On our server, the id of ``thisis@50.com``’s container is ``190c7d70fbc1``. To check the IP of the container we can use the ``docker inspect`` command.
 
-Be sure to replace 190c7d70fbc1 by the right container id that the SQL request gave you during the last step.
+Be sure to replace ``190c7d70fbc1`` by the right container id that the SQL request gave you during the last step.
 
-# Build your own Memcached SaaS with Docker
+As expected the IP address is ``172.16.42.14`. If you do the same on your server be sure that this IP matches the one shown in the iptables listing.
 
-This is a final project application fot [*CS50*](https://www.edx.org/courses/HarvardX/CS50x/2012/about).
+_Congratulations!_ You are now running a Memcached SaaS, with a simple security layer. Congratulations!
 
-This application will permit you to build a minimalist Memcached SaaS using [*Docker*](http://www.docker.io).
+# Where to go from here
 
-Docker install
--> install
--> create memcached image
--> 
+We’ve seen how to run Memcahed as a service with Docker. But you could create your own container image, running another service. John Costa did write an article on how to install Redis on Docker for instance. But you could create an image running any service (MySQL, MongoDB, PHP, …), and then build a SaaS using this container image.
+
+Why should we offer only one type of service on our SaaS? We could offer multiple services. We could simply add a new table “services” to the database so that our users could be able to have multiple services. And we could add an admin page in order to list, activate and deactivate the available services.
+
+The website shown in this example is very basic. We could easily improve it. We could for instance:
+-   add an admin page to list users and delete/suspend them
+-	let users change recover and change their password
+-	let users delete their account
+-	let user restart their Memcached server
+-	let the user specify the memory limit he needs (using run docker –m) 
+-	let the user know how much memory he uses
+-	add a payment gateway to make our customer pay for the service
+-	…
+
+You can also add more security, scalability, etc… but this will be another story :) 
+
+I hope you had fun playing with this article. Feel free to contact me if you have any question.
+
+Happy SaaSing!
+
+To be continued...
+
