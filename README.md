@@ -12,7 +12,7 @@ This document and source code are part of my final project for cs50x that I star
 -	build a cool product. Building a SaaS a new way and with a new piece of technology sounds fun!
 -	make it open source, and learn how to use Git and GitHub
 
-Along the way I wrote several documents that are available on SlideShare. Some of them have been used by Docker in their documentation.
+Along the way I wrote several documents that are available on [SlideShare](http://www.slideshare.net/julienbarbier42/documents). Some of them have been used by Docker in their documentation.
 
 ### Proof of concept
 
@@ -39,13 +39,13 @@ I had only a few weeks to learn Ruby, Rails, Git, Github, iptables, sudoers, …
 
 In order to follow this tutorial you will need a server with the last version of Ubuntu (or any other OS, but using Vagrant and VirtualBox to run an Ubuntu image). We need Ubuntu because our minimalist SaaS will use Docker, which runs on Ubuntu servers only.
 
-The community behind Docker is growing fast and is very active. And at the time I write this document, it is now possible to use Docker on different operating systems. For instance, Flavio Castelli has written a blog-post on how to use Docker on openSUSE. And I’ve seen people using it on CentOS during a Docker demo days.
+The community behind Docker is growing fast and is very active. And at the time I write this document, it is now possible to use Docker on different operating systems. For instance, Flavio Castelli has written a blog-post on how to use [Docker on openSUSE](http://flavio.castelli.name/2013/04/12/docker-and-opensuse/). And I’ve seen people using it on CentOS during a Docker demo days.
 
 ## Docker
 
 Docker is a Linux container runtime. It has been released few weeks ago as an open-source project by dotCloud. Docker complements LXC with a high-level API which operates at the process level. It runs unix processes with strong guarantees of isolation and repeatability across servers.
 
-Please visit Docker’s website for a tutorial on how to get Docker running on your Ubuntu machine or using Vagrant + VirtualBox on any other Operating system.
+Please visit [Docker’s website](http://www.docker.io) for a tutorial on how to get Docker running on your Ubuntu machine or using Vagrant + VirtualBox on any other Operating system.
 
 We will use only few Docker commands through this tutorial. To learn more about the Docker command line interface, you can take a look at their CLI documentation page.
 
@@ -445,7 +445,7 @@ _Congratulations!_ You are now running a Memcached SaaS, with a simple security 
 
 # Where to go from here
 
-We’ve seen how to run Memcahed as a service with Docker. But you could create your own container image, running another service. John Costa did write an article on how to install Redis on Docker for instance. But you could create an image running any service (MySQL, MongoDB, PHP, …), and then build a SaaS using this container image.
+We’ve seen how to run Memcahed as a service with Docker. But you could create your own container image, running another service. John Costa did write an article on how to install [Redis on Docker](http://www.johnmcostaiii.net/2013/installing-redis-on-docker/) for instance. But you could create an image running any service (MySQL, MongoDB, PHP, …), and then build a SaaS using this container image.
 
 Why should we offer only one type of service on our SaaS? We could offer multiple services. We could simply add a new table “services” to the database so that our users could be able to have multiple services. And we could add an admin page in order to list, activate and deactivate the available services.
 
@@ -461,7 +461,7 @@ The website shown in this example is very basic. We could easily improve it. We 
 
 You can also add more security, scalability, etc… but this will be another story :) 
 
-I hope you had fun playing with this article. Feel free to contact me if you have any question.
+I hope you had fun playing with this article. Feel free to [contact me](https://twitter.com/julienbarbier42) if you have any question.
 
 Happy SaaSing!
 
