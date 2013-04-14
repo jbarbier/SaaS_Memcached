@@ -10,7 +10,7 @@ Read and download an updated version of this article on [SlideShare](http://www.
 
 This document and source code are part of my final project for cs50x that I started on edx.org few months ago. For this final project I had several goals:
 -  learn a new language: I chose to learn Ruby and Rails
--	use a new piece of technology. I chose to use Docker
+-	use a new piece of technology. I chose to use [Docker](http://www.docker.io)
 -	build a cool product. Building a SaaS a new way and with a new piece of technology sounds fun!
 -	make it open source, and learn how to use Git and GitHub
 
@@ -28,7 +28,7 @@ I chose Memcached because it is a widely used service. It is also easy to instal
 
 ### Thank you!
 
-I had only a few weeks to learn Ruby, Rails, Git, Github, iptables, sudoers, … and build this proof of concept. I would like to thank all the people who gave their time to help me and answer all my questions:
+I had only a few weeks to learn Ruby, Rails, Git, Github, Docker, iptables, sudoers, … and build this proof of concept. I would like to thank all the people who gave their time to help me and answer all my questions:
 -	Guillaume Charmes, alias Cortex, alias MPM, my Docker teacher
 -	Guillaume Luccizano, Steeve Morin and Sylvain Kalache, my Rails and Ruby teachers (sorry I was not able to use TDD until the end, I didn’t have enough time!)
 -	Daniel Mizyrycki, my Git and GitHub teacher
