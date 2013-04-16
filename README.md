@@ -339,6 +339,8 @@ The file ``remove_ip`` does exactly the opposite using the –D option to delete
     /sbin/iptables -D FORWARD -d $1 -s $2 -j ACCEPT
     /sbin/iptables -D FORWARD -d $1 -j DROP
 
+NOTE: Be sure that users do not have write access to these files.
+
 ### Calling iptables from a web server
 
 We call the previous scripts from the two following functions in users_controller.rb
