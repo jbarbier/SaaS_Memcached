@@ -2,6 +2,8 @@
 
 A proof of concept with a simple Memcached SaaS
 
+See a demo of this application running at [memcachedasaservice.com](http://www.memcachedasaservice.com)
+
 Read and download an updated version of this article on [SlideShare](http://www.slideshare.net/julienbarbier42/building-a-saas-using-docker)
 
 ## Introduction
