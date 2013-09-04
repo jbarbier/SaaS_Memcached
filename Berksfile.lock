@@ -1,0 +1,49 @@
+{
+  "sources": {
+    "apt": {
+      "locked_version": "1.9.2"
+    },
+    "build-essential": {
+      "locked_version": "1.4.0"
+    },
+    "ruby": {
+      "locked_version": "0.9.2"
+    },
+    "git": {
+      "locked_version": "2.6.0"
+    },
+    "curl": {
+      "locked_version": "1.1.0"
+    },
+    "docker": {
+      "locked_version": "0.6.2"
+    },
+    "dmg": {
+      "locked_version": "2.0.0"
+    },
+    "yum": {
+      "locked_version": "2.3.2"
+    },
+    "windows": {
+      "locked_version": "1.10.0"
+    },
+    "chef_handler": {
+      "locked_version": "1.1.4"
+    },
+    "runit": {
+      "locked_version": "1.2.0"
+    },
+    "golang": {
+      "locked_version": "1.1.1"
+    },
+    "lxc": {
+      "locked_version": "1.1.2"
+    },
+    "dpkg_autostart": {
+      "locked_version": "0.1.6"
+    },
+    "modules": {
+      "locked_version": "0.1.2"
+    }
+  }
+}

@@ -41,6 +41,13 @@ I had only a few weeks to learn Ruby, Rails, Git, Github, Docker, iptables, sudo
 
 ## Ubuntu machine
 
+-----------------------------------------------------------------------------
+
+If you don't have ubuntu,  or you don't want to dirty up your machine.   you can use vagrant for dev/test of this app.
+Install vagrant with the berkshelf and omnibus plugins then just run `vagrant up` in the root of this repository.
+
+-----------------------------------------------------------------------------
+
 In order to follow this tutorial you will need a server with the last version of Ubuntu (or any other OS, but using Vagrant and VirtualBox to run an Ubuntu image). We need Ubuntu because our minimalist SaaS will use Docker, which runs on Ubuntu servers only.
 
 The community behind Docker is growing fast and is very active. And at the time I write this document, it is now possible to use Docker on different operating systems. For instance, Flavio Castelli has written a blog-post on how to use [Docker on openSUSE](http://flavio.castelli.name/2013/04/12/docker-and-opensuse/). And I’ve seen people using it on CentOS during a Docker demo days.
