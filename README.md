@@ -473,6 +473,4 @@ Happy SaaSing!
 
 To be continued...
 
-[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/a0687e8ec092614c05f2eaa0712eba03 "githalytics.com")](http://githalytics.com/jbarbier/SaaS_Memcached.git)
-
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jbarbier/saas_memcached/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
