@@ -474,3 +474,7 @@ Happy SaaSing!
 To be continued...
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jbarbier/saas_memcached/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jbarbier/saas_memcached/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
