@@ -66,14 +66,14 @@ class UsersController < ApplicationController
   end
 
   def create_memcached_instance
-    docker_path = '/home/julien/docker-master/'
+    docker_path = ''
     container_id = `#{docker_path}docker run -d -p 11211 jbarbier/memcached memcached -u daemon`
     cmd = "#{docker_path}docker inspect #{container_id}"
     json_infos = `#{cmd}`
     i = JSON.parse(json_infos)
-    @user.memcached = i["NetworkSettings"]["PortMapping"]["11211"]
+    @user.memcached = i[0]["NetworkSettings"]["PortMapping"]["Tcp"]["11211"]
     @user.container_id = container_id
-    @user.docker_ip = i["NetworkSettings"]["IpAddress"]
+    @user.docker_ip = i[0]["NetworkSettings"]["IpAddress"]
   end
   
   $VALIDATE_IP_REGEX = /^([01]?\d\d?|2[0-4]\d|25[0-5])\.([01]?\d\d?|2[0-4]\d|25[0-5])\.([01]?\d\d?|2[0-4]\d|25[0-5])\.([01]?\d\d?|2[0-4]\d|25[0-5])$/  
